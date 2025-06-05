@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 if [ "$ENABLE_SSL" != "false" ]
@@ -8,4 +9,6 @@ then
 else
     echo "SSL/TLS disabled. Listening for http connections on port $UNSECURE_PORT"
 fi
+
+# Start the main application
 exec java -jar stub-cas.jar
