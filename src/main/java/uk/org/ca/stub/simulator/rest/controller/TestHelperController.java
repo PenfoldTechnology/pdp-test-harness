@@ -114,4 +114,33 @@ public class TestHelperController {
         
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * GET /test-helpers/health
+     * 
+     * Simple health check endpoint that returns the service status.
+     * Useful for monitoring and ensuring the CAS stub is running correctly.
+     * 
+     * @return Health status information
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, Object>> health() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("service", "Consent & Authorisation Stub");
+        response.put("timestamp", java.time.Instant.now().toString());
+        
+        // Check database connectivity by counting resources
+        try {
+            long resourceCount = resourceRepository.count();
+            response.put("database", "UP");
+            response.put("resourceCount", resourceCount);
+        } catch (Exception e) {
+            response.put("database", "DOWN");
+            response.put("databaseError", e.getMessage());
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+        }
+        
+        return ResponseEntity.ok(response);
+    }
 } 
